@@ -1,36 +1,19 @@
+import { useDispatch, useSelector } from "react-redux";
+import { decrement, increment } from "./Action/Counter.Action";
+import Medicine from "./Container/Medicines/Medicines";
+import Counter_Reducer from "./Reducers/Counter";
+// import "./styles.css";
 
-import './App.css';
-import MiniDrawer from './Component/Drawer';
-import { Route , Switch} from "react-router-dom";
-import Home from './Containers/Home';
-import About from './Containers/About';
-import Medicine from './Containers/Medicine';
-import Contact from './Containers/Contact';
-import Doctors from './Containers/Doctors';
-import {Provider} from "react-redux"
-import { configureStore } from "./redux/Store";
-import Counter from './Containers/Counter/Counter';
+export default function App() {
+  const dispatch = useDispatch();
+  const counter_display = useSelector((state) => state.counter);
 
-
-
-function App() {
-  const store = configureStore()
   return (
-    <>
-    <Provider store={store}>
-    <MiniDrawer>
-      <Switch>
-        <Route exact path={"/"} component={Home} /> 
-        <Route exact path={"/About"} component={About} />
-        <Route exact path={"/Medicine"} component={Medicine} /> 
-        <Route exact path={"/Contact"} component={Contact} /> 
-        <Route exact path={"/Doctors"} component={Doctors} />
-        <Route exact path={"/Contact"} component={Counter} />
-      </Switch>
-    </MiniDrawer>
-    </Provider>
-    </>
+    <div className="App">
+      <button onClick={() => dispatch(decrement())}>-</button>
+      {counter_display}
+      <button onClick={() => dispatch(increment())}>+</button>
+      <Medicine />
+    </div>
   );
 }
-
-export default App;
