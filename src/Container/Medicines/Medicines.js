@@ -15,7 +15,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CreateIcon from "@mui/icons-material/Create";
 import { useDispatch, useSelector } from "react-redux";
-import { Medicinedata } from "../../Action/Medicine.Action";
+import MedicineData from "../../Action/Medicine.Action";
 
 export default function Medicine() {
   const [open, setOpen] = React.useState(false);
@@ -23,7 +23,7 @@ export default function Medicine() {
   const [Update, setUpdate] = useState();
   const [dopen, setDopen] = React.useState(false);
   const [did, setDid] = useState();
-  const medicine_display = useSelector  (state =>state.medicine)
+  const medicine_display = useSelector(state =>state.medicine)
 
   const handleClickDopen = (id) => {
     setDopen(true);
@@ -170,7 +170,7 @@ export default function Medicine() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(Medicinedata)
+    dispatch(MedicineData)
     // loadData();
   }, []);
 console.log({medicine_display});
@@ -185,7 +185,7 @@ console.log({medicine_display});
           </center>
           <div style={{ height: 400, width: "100%" }}>
             <DataGrid
-              rows={medicine_display.Medicinedata}
+              rows={medicine_display.MedicineData}
               columns={columns}
               pageSize={5}
               rowsPerPageOptions={[5]}

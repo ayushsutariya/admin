@@ -11,7 +11,7 @@ export const Medicine_Reducer = (state = init_state , action) => {
             return{
                 ...state,
                 isloading : false,
-                MedicineData : [action.payload],
+                MedicineData : action.payload,
                 error: ''
             }
 
