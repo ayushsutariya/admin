@@ -15,7 +15,8 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CreateIcon from "@mui/icons-material/Create";
 import { useDispatch, useSelector } from "react-redux";
-import MedicineData from "../../Action/Medicine.Action";
+import MedicineData, { Add_MedicineData, Delete_MedicineData } from "../../Action/Medicine.Action";
+// import "./Medicine.style"
 
 export default function Medicine() {
   const [open, setOpen] = React.useState(false);
@@ -24,7 +25,7 @@ export default function Medicine() {
   const [dopen, setDopen] = React.useState(false);
   const [did, setDid] = useState();
   const medicine_display = useSelector(state =>state.medicine)
-
+  const dispatch = useDispatch(); 
   const handleClickDopen = (id) => {
     setDopen(true);
     setDid(id);
@@ -45,7 +46,7 @@ export default function Medicine() {
   let medicine = {
     name: yup.string().required("enter name"),
     price: yup.string().required("please enter price"),
-    quantity: yup.string().required("please enter quantity"),
+    // quantity: yup.string().required("please enter quantity"),
     expiry: yup.string().required("please enter expiry")
   };
 
@@ -88,29 +89,32 @@ export default function Medicine() {
   };
 
   const handleSubmitdata = (value) => {
-    let localdata = JSON.parse(localStorage.getItem("medicine"));
+    // let localdata = JSON.parse(localStorage.getItem("medicine"));
 
-    console.log(localdata);
+    // console.log(localdata);
     let data = {
       id: Math.floor(Math.random() * 1000),
       ...value
     };
 
-    if (localdata === null) {
-      localStorage.setItem("medicine", JSON.stringify([data]));
-    } else {
-      localdata.push(data);
-      localStorage.setItem("medicine", JSON.stringify(localdata));
-    }
+    dispatch(Add_MedicineData(data))
+
+    // if (localdata === null) {
+    //   localStorage.setItem("medicine", JSON.stringify([data]));
+    // } else {
+    //   localdata.push(data);
+    //   localStorage.setItem("medicine", JSON.stringify(localdata));
+    // }
 
     setOpen(false);
     loadData();
   };
 
   const columns = [
+    { field: "id", headerName: "ID", width: 130 },
     { field: "name", headerName: "Name", width: 130 },
     { field: "price", headerName: " Price", width: 130 },
-    { field: "quantity", headerName: "Quantity", width: 130 },
+    // { field: "quantity", headerName: "Quantity", width: 130 },
     { field: "expiry", headerName: "Expiry", width: 130 },
     {
       field: "delete",
@@ -149,136 +153,137 @@ export default function Medicine() {
   };
 
   const handleDelete = () => {
-    let localData = JSON.parse(localStorage.getItem("medicine"));
+    // let localData = JSON.parse(localStorage.getItem("medicine"));
 
-    let filterData = localData.filter((v, i) => v.id !== did);
+    // let filterData = localData.filter((v, i) => v.id !== did);
 
-    localStorage.setItem("medicine", JSON.stringify(filterData));
+    // localStorage.setItem("medicine", JSON.stringify(filterData));
+
+    dispatch(Delete_MedicineData(did))
+
     loadData();
 
     setDopen(false);
   };
 
   const loadData = () => {
-    let localData = JSON.parse(localStorage.getItem("medicine"));
+    // let localData = JSON.parse(localStorage.getItem("medicine"));
 
-    if (localData !== null) {
-      setData(localData);
-    }
+    // if (localData !== null) {
+    //   setData(localData);
+    // }
+
+    setData(medicine_display.MedicineData)
   };
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(MedicineData)
-    // loadData();
+    loadData();
   }, []);
 console.log({medicine_display});
   return (
-    <Box>
-      <Container>
-        <div>
-          <center>
-            <Button variant="outlined" onClick={() => handleClickOpen()}>
-              Add Medicine
-            </Button>
-          </center>
-          <div style={{ height: 400, width: "100%" }}>
-            <DataGrid
-              rows={medicine_display.MedicineData}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              checkboxSelection
-            />
-          </div>
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Add Medicine</DialogTitle>
-            <Formik value={formik}>
-              <Form onSubmit={formik.handleSubmit}>
-                <DialogContent>
-                  <TextField
-                    margin="dense"
-                    id="name"
-                    label="name"
-                    type="name"
-                    fullWidth
-                    variant="standard"
-                    onChange={formik.handleChange}
-                    defaultValue={formik.values.name}
-                    helperText={formik.errors.name}
-                    error={formik.errors.name ? true : false}
-                  />
-
-                  <TextField
-                    margin="dense"
-                    id="price"
-                    label="price"
-                    type="price"
-                    fullWidth
-                    variant="standard"
-                    onChange={formik.handleChange}
-                    defaultValue={formik.values.price}
-                    helperText={formik.errors.price}
-                    error={formik.errors.price ? true : false}
-                  />
-                  <TextField
-                    margin="dense"
-                    id="quantity"
-                    label="quantity"
-                    fullWidth
-                    variant="standard"
-                    onChange={formik.handleChange}
-                    defaultValue={formik.values.quantity}
-                    helperText={formik.errors.quantity}
-                    error={formik.errors.quantity ? true : false}
-                  />
-                  <TextField
-                    margin="dense"
-                    id="expiry"
-                    label="expiry"
-                    fullWidth
-                    variant="standard"
-                    onChange={formik.handleChange}
-                    defaultValue={formik.values.expiry}
-                    helperText={formik.errors.expiry}
-                    error={formik.errors.expiry ? true : false}
-                  />
-                  <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    {Update ? (
-                      <Button type="submit">Update</Button>
-                    ) : (
-                      <Button type="submit">Submit</Button>
-                    )}
-                  </DialogActions>
-                </DialogContent>
-              </Form>
-            </Formik>
-          </Dialog>
+    <div>
+      {
+        medicine_display.isloading ? 
+        <p>Loading ...</p>
+ : 
+        medicine_display.error !== '' ? 
+        <p>{medicine_display.error}</p> :
+        <Box>
+        <Container>
           <div>
-            <Dialog
-              open={dopen}
-              onClose={handleClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                {"Are You Sure Delete Medicine Data ...? "}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description"></DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => handleDelete()} autofocus>
-                  yes
-                </Button>
-                <Button onClick={handleClose}>No</Button>
-              </DialogActions>
+            <center>
+              <Button variant="outlined" onClick={() => handleClickOpen()}>
+                Add Medicine
+              </Button>
+            </center>
+            <div style={{ height: 400, width: "100%" }}>
+              <DataGrid
+                rows={medicine_display.MedicineData}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                checkboxSelection
+              />
+            </div>
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle>Add Medicine</DialogTitle>
+              <Formik value={formik}>
+                <Form onSubmit={formik.handleSubmit}>
+                  <DialogContent>
+                    <TextField
+                      margin="dense"
+                      id="name"
+                      label="name"
+                      type="name"
+                      fullWidth
+                      variant="standard"
+                      onChange={formik.handleChange}
+                      defaultValue={formik.values.name}
+                      helperText={formik.errors.name}
+                      error={formik.errors.name ? true : false}
+                    />
+  
+                    <TextField
+                      margin="dense"
+                      id="price"
+                      label="price"
+                      type="price"
+                      fullWidth
+                      variant="standard"
+                      onChange={formik.handleChange}
+                      defaultValue={formik.values.price}
+                      helperText={formik.errors.price}
+                      error={formik.errors.price ? true : false}
+                    />
+                    <TextField
+                      margin="dense"
+                      id="expiry"
+                      label="expiry"
+                      fullWidth
+                      variant="standard"
+                      onChange={formik.handleChange}
+                      defaultValue={formik.values.expiry}
+                      helperText={formik.errors.expiry}
+                      error={formik.errors.expiry ? true : false}
+                    />
+                    <DialogActions>
+                      <Button onClick={handleClose}>Cancel</Button>
+                      {Update ? (
+                        <Button type="submit">Update</Button>
+                      ) : (
+                        <Button type="submit">Submit</Button>
+                      )}
+                    </DialogActions>
+                  </DialogContent>
+                </Form>
+              </Formik>
             </Dialog>
+            <div>
+              <Dialog
+                open={dopen}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  {"Are You Sure Delete Medicine Data ...? "}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description"></DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => handleDelete()} autofocus>
+                    yes
+                  </Button>
+                  <Button onClick={handleClose}>No</Button>
+                </DialogActions>
+              </Dialog>
+            </div>
           </div>
-        </div>
-      </Container>
-    </Box>
+        </Container>
+      </Box>
+      }
+    </div>
   );
 }

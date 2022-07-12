@@ -12,8 +12,8 @@ export const Medicine_Reducer = (state = init_state , action) => {
                 ...state,
                 isloading : false,
                 MedicineData : action.payload,
-                error: ''
-            }
+                error: '',
+            } 
 
             case 'ERROR_MEDICINE' : 
             return {
@@ -22,9 +22,32 @@ export const Medicine_Reducer = (state = init_state , action) => {
                 MedicineData : [] ,
                 error : action.payload   
             }
+
+            case 'LOADING_MEDICINE' : 
+            return{
+                ...state,
+                isloading : true ,
+                error : ''
+            }
+
+            case 'DELETE_MEDICINE' :
+                return {
+                  ...state,
+                    isloading : false,
+                    MedicineData : state.MedicineData.filter((l) => l.id !== action.payload),
+                    error : ''
+                }
+
+            case 'ADD_MEDICINE' :
+                return{
+                    ...state,
+                    isloading : false,
+                    MedicineData : state.MedicineData.concat(action.payload),
+                    error : ''
+                } 
             
         default : 
-            return state    
+            return state  
     }
 }
 
